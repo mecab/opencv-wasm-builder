@@ -1,7 +1,5 @@
 #!/bin/bash
 
-OPENCV_SOURCE_URL="${OPENCV_SOURCE_URL:-https://github.com/opencv/opencv/archive/3.4.2.zip}"
-
 set -e
 
 echo '🔄 We will update emsdk to the latest version'
@@ -12,15 +10,20 @@ cd /emsdk
 ./emsdk activate latest
 source ./emsdk_env.sh
 
-echo '🌏 We will download OpenCV'
+if [ ${OPENCV_SOURCE_URL} ]
+then
+    echo '🌏 We will download OpenCV provided in parameter'
+    echo "(OPENCV_SOURCE_URL = ${OPENCV_SOURCE_URL})"
 
-curl -L -o /tmp/opencv.zip ${OPENCV_SOURCE_URL}
-cd /tmp
-unzip opencv.zip
+    curl -L -o /tmp/opencv.zip "${OPENCV_SOURCE_URL}"
+    rm -rf /opencv/
+    mkdir /opencv/
+    unzip /tmp/opencv.zip /opencv/
+fi
 
 echo '⚙ Now we will build OpenCV.js'
 
-cd opencv-*
+cd /opencv/
 python ./platforms/js/build_js.py build_wasm --build_wasm
 
 echo '📦 Copying the production to /built'
