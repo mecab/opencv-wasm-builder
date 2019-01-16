@@ -17,6 +17,7 @@ RUN apt-get update && \
     tar -zxvf binaryen.tar.gz -C /bin --strip=1
 
 ADD ./entrypoint /entrypoint
+VOLUME /opencv
 
 ENTRYPOINT /entrypoint
 VOLUME /built
